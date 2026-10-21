@@ -1,0 +1,92 @@
+const N = 2 
+const M = 2
+range FLOORS=0..N
+range USERS=0..M
+
+// QUEUES
+QUEUE = SLOT[0],
+SLOT[i:USERS] = (
+when (i < M) call -> WAIT[i]
+|alarm -> WAITING_RESOLVE[i]
+),
+// USER in the head of the queue pressed button and is waiting
+WAIT[i:0..M-1] = (
+move_empty -> ENTERING[i] // elevator is coming to the level
+|alarm -> WAITING_RESOLVE[i]
+),
+// USER enters the elevator
+ENTERING[i:0..M-1] = (
+enter -> SELECT[i]
+|alarm -> WAITING_RESOLVE[i]
+),
+SELECT[i:0..M-1] = (
+    select_level[to:FLOORS] -> MOVING[i][to]
+   |alarm -> ALARM_MOVING[i]
+),
+MOVING[from:0..M-1][to:FLOORS] = (
+    move[to] -> exit[to] -> SLOT[from+1]
+   |alarm -> ALARM_MOVING[from]
+),
+// allarme con utente in cabina: l'ascensore lo riporta a piano 0
+ALARM_MOVING[from:0..M-1] = (
+    move[0] -> exit[0] -> WAITING_RESOLVE[from+1]
+),
+// An allarm was activated, no user can call for the elevator
+WAITING_RESOLVE[i:USERS] = (resolve -> SLOT[i]).
+
+ELEVATOR = IDLE[0],
+IDLE[i:FLOORS] = (
+s[tmp:FLOORS].move_empty -> LOADING[tmp]
+|alarm -> ALARM_ELEVATOR
+),
+LOADING[i:FLOORS] = (
+s[i].enter -> IN_CABIN[i]
+|alarm -> ALARM_ELEVATOR
+),
+IN_CABIN[i:FLOORS] = (
+s[i].move[to:FLOORS] -> s[i].exit[to] -> IDLE[to]
+|alarm -> ALARM_ELEVATOR_FULL[i]
+),
+ALARM_ELEVATOR_FULL[i:FLOORS] = (
+s[i].move[0] -> open_door -> s[i].exit[0] -> AWAIT_SIGNAL
+),
+ALARM_ELEVATOR = (move -> open_door -> AWAIT_SIGNAL),
+AWAIT_SIGNAL = (resolve -> IDLE[0]).
+
+NORMAL = (
+alarm -> ALARM
+),
+ALARM = (resolve -> NORMAL).
+
+||BUILDING = (
+    s[i:0..M]:QUEUE
+    || ELEVATOR
+    || NORMAL
+) / { alarm/s[j:0..M].alarm, resolve/s[k:0..M].resolve }.
+
+// FLUENTS
+
+// A user at the f floor has called the lift and is waiting
+fluent CALLING[f:0..N] = <s[f].call, {s[f].enter,alarm}>
+
+// A user is inside the lift
+fluent USER_IN_CABIN = <s[i:0..N].enter, {s[i:0..N].exit[to:0..N],alarm}>
+
+// A user has entered and selected a destination
+fluent TARGET_SELECTED[to:0..N] = <s[i:0..N].select_level[to], {s[j:0..N].exit[to],alarm}>
+
+// FLTL Properties (ASSERTIONS)
+
+// Property 1: "Only one user at a time should be using the lift"
+// Mutex: verifiable by checking that two consecutives enter cannot happen
+assert MUTEX_CABIN = [](USER_IN_CABIN -> !exists[f:0..N] s[f].enter)
+
+
+// Property 2: "If a user is calling the lift, the lift will eventually arrive"
+// Liveness: If a user calls the lift at level f it will eventually arrive
+assert LIVENESS_CALL = forall[f:0..N] [](CALLING[f] -> <>s[f].enter)
+
+// Property 3: "If a user inside the lift select a floor, he/she would finally arrive at the floor"
+
+// Liveness: if a level is selected, the user will eventually reach it
+assert LIVENESS_DELIVERY = forall[to:0..N] [](TARGET_SELECTED[to] -> <>s[to].exit[to])
