@@ -1,0 +1,516 @@
+<?xml version="1.0" encoding="ISO-8859-1"?><pnml>
+    <net id="Net-One" type="P/T net">
+        <token id="Default" enabled="true" red="0" green="0" blue="0"/>
+        <place id="ENTERING">
+            <graphics>
+                <position x="124.09090909090911" y="388.6363636363636"/>
+            </graphics>
+            <name>
+                <value>ENTERING</value>
+                <graphics>
+                    <offset x="0.0" y="0.0"/>
+                </graphics>
+            </name>
+            <initialMarking>
+                <value>Default,0</value>
+                <graphics>
+                    <offset x="0.0" y="0.0"/>
+                </graphics>
+            </initialMarking>
+            <capacity>
+                <value>0</value>
+            </capacity>
+        </place>
+        <place id="Exiting">
+            <graphics>
+                <position x="630.0" y="195.0"/>
+            </graphics>
+            <name>
+                <value>Exiting</value>
+                <graphics>
+                    <offset x="0.0" y="0.0"/>
+                </graphics>
+            </name>
+            <initialMarking>
+                <value>Default,0</value>
+                <graphics>
+                    <offset x="0.0" y="0.0"/>
+                </graphics>
+            </initialMarking>
+            <capacity>
+                <value>1</value>
+            </capacity>
+        </place>
+        <place id="FLOOR_QUEUE">
+            <graphics>
+                <position x="120.0" y="60.0"/>
+            </graphics>
+            <name>
+                <value>FLOOR_QUEUE</value>
+                <graphics>
+                    <offset x="0.0" y="0.0"/>
+                </graphics>
+            </name>
+            <initialMarking>
+                <value>Default,0</value>
+                <graphics>
+                    <offset x="0.0" y="0.0"/>
+                </graphics>
+            </initialMarking>
+            <capacity>
+                <value>2</value>
+            </capacity>
+        </place>
+        <place id="IDLE_ELEVATOR">
+            <graphics>
+                <position x="330.0" y="60.0"/>
+            </graphics>
+            <name>
+                <value>IDLE_ELEVATOR</value>
+                <graphics>
+                    <offset x="0.0" y="0.0"/>
+                </graphics>
+            </name>
+            <initialMarking>
+                <value>Default,1</value>
+                <graphics>
+                    <offset x="0.0" y="0.0"/>
+                </graphics>
+            </initialMarking>
+            <capacity>
+                <value>1</value>
+            </capacity>
+        </place>
+        <place id="IN">
+            <graphics>
+                <position x="360.0" y="570.0"/>
+            </graphics>
+            <name>
+                <value>IN</value>
+                <graphics>
+                    <offset x="0.0" y="0.0"/>
+                </graphics>
+            </name>
+            <initialMarking>
+                <value>Default,0</value>
+                <graphics>
+                    <offset x="0.0" y="0.0"/>
+                </graphics>
+            </initialMarking>
+            <capacity>
+                <value>1</value>
+            </capacity>
+        </place>
+        <place id="MOVING">
+            <graphics>
+                <position x="660.0" y="555.0"/>
+            </graphics>
+            <name>
+                <value>MOVING</value>
+                <graphics>
+                    <offset x="0.0" y="0.0"/>
+                </graphics>
+            </name>
+            <initialMarking>
+                <value>Default,0</value>
+                <graphics>
+                    <offset x="0.0" y="0.0"/>
+                </graphics>
+            </initialMarking>
+            <capacity>
+                <value>1</value>
+            </capacity>
+        </place>
+        <place id="OPEN_DOORS">
+            <graphics>
+                <position x="302.72727272727286" y="390.00000000000006"/>
+            </graphics>
+            <name>
+                <value>OPEN_DOORS</value>
+                <graphics>
+                    <offset x="0.0" y="0.0"/>
+                </graphics>
+            </name>
+            <initialMarking>
+                <value>Default,0</value>
+                <graphics>
+                    <offset x="0.0" y="0.0"/>
+                </graphics>
+            </initialMarking>
+            <capacity>
+                <value>1</value>
+            </capacity>
+        </place>
+        <place id="WAITING">
+            <graphics>
+                <position x="120.0" y="225.0"/>
+            </graphics>
+            <name>
+                <value>WAITING</value>
+                <graphics>
+                    <offset x="0.0" y="0.0"/>
+                </graphics>
+            </name>
+            <initialMarking>
+                <value>Default,0</value>
+                <graphics>
+                    <offset x="0.0" y="0.0"/>
+                </graphics>
+            </initialMarking>
+            <capacity>
+                <value>1</value>
+            </capacity>
+        </place>
+        <transition id="Call">
+            <graphics>
+                <position x="120.0" y="135.0"/>
+            </graphics>
+            <name>
+                <value>Call</value>
+                <graphics>
+                    <offset x="-5.0" y="35.0"/>
+                </graphics>
+            </name>
+            <orientation>
+                <value>90</value>
+            </orientation>
+            <rate>
+                <value>1.0</value>
+            </rate>
+            <timed>
+                <value>false</value>
+            </timed>
+            <infiniteServer>
+                <value>false</value>
+            </infiniteServer>
+            <priority>
+                <value>1</value>
+            </priority>
+        </transition>
+        <transition id="Enter">
+            <graphics>
+                <position x="195.0" y="495.0"/>
+            </graphics>
+            <name>
+                <value>Enter</value>
+                <graphics>
+                    <offset x="-5.0" y="35.0"/>
+                </graphics>
+            </name>
+            <orientation>
+                <value>90</value>
+            </orientation>
+            <rate>
+                <value>1.0</value>
+            </rate>
+            <timed>
+                <value>false</value>
+            </timed>
+            <infiniteServer>
+                <value>false</value>
+            </infiniteServer>
+            <priority>
+                <value>1</value>
+            </priority>
+        </transition>
+        <transition id="Exiting">
+            <graphics>
+                <position x="495.0" y="120.0"/>
+            </graphics>
+            <name>
+                <value>Exiting</value>
+                <graphics>
+                    <offset x="-5.0" y="35.0"/>
+                </graphics>
+            </name>
+            <orientation>
+                <value>0</value>
+            </orientation>
+            <rate>
+                <value>1.0</value>
+            </rate>
+            <timed>
+                <value>false</value>
+            </timed>
+            <infiniteServer>
+                <value>false</value>
+            </infiniteServer>
+            <priority>
+                <value>1</value>
+            </priority>
+        </transition>
+        <transition id="Select_Floor">
+            <graphics>
+                <position x="510.0" y="555.0"/>
+            </graphics>
+            <name>
+                <value>Select_Floor</value>
+                <graphics>
+                    <offset x="-5.0" y="35.0"/>
+                </graphics>
+            </name>
+            <orientation>
+                <value>0</value>
+            </orientation>
+            <rate>
+                <value>1.0</value>
+            </rate>
+            <timed>
+                <value>false</value>
+            </timed>
+            <infiniteServer>
+                <value>false</value>
+            </infiniteServer>
+            <priority>
+                <value>1</value>
+            </priority>
+        </transition>
+        <transition id="Stop">
+            <graphics>
+                <position x="660.0" y="345.0"/>
+            </graphics>
+            <name>
+                <value>Stop</value>
+                <graphics>
+                    <offset x="-5.0" y="35.0"/>
+                </graphics>
+            </name>
+            <orientation>
+                <value>90</value>
+            </orientation>
+            <rate>
+                <value>1.0</value>
+            </rate>
+            <timed>
+                <value>false</value>
+            </timed>
+            <infiniteServer>
+                <value>false</value>
+            </infiniteServer>
+            <priority>
+                <value>1</value>
+            </priority>
+        </transition>
+        <transition id="Waiting_Elevator">
+            <graphics>
+                <position x="197.72727272727275" y="272.7272727272727"/>
+            </graphics>
+            <name>
+                <value>Waiting_Elevator</value>
+                <graphics>
+                    <offset x="-5.0" y="35.0"/>
+                </graphics>
+            </name>
+            <orientation>
+                <value>90</value>
+            </orientation>
+            <rate>
+                <value>1.0</value>
+            </rate>
+            <timed>
+                <value>false</value>
+            </timed>
+            <infiniteServer>
+                <value>false</value>
+            </infiniteServer>
+            <priority>
+                <value>1</value>
+            </priority>
+        </transition>
+        <arc id="Call to WAITING" source="Call" target="WAITING">
+            <graphics/>
+            <inscription>
+                <value>Default,1</value>
+                <graphics/>
+            </inscription>
+            <tagged>
+                <value>false</value>
+            </tagged>
+            <arcpath id="000" x="131" y="151" curvePoint="false"/>
+            <arcpath id="001" x="131" y="222" curvePoint="false"/>
+            <type value="normal"/>
+        </arc>
+        <arc id="ENTERING to Enter" source="ENTERING" target="Enter">
+            <graphics/>
+            <inscription>
+                <value>Default,1</value>
+                <graphics/>
+            </inscription>
+            <tagged>
+                <value>false</value>
+            </tagged>
+            <arcpath id="000" x="144" y="413" curvePoint="false"/>
+            <arcpath id="001" x="201" y="501" curvePoint="false"/>
+            <type value="normal"/>
+        </arc>
+        <arc id="Enter to IN" source="Enter" target="IN">
+            <graphics/>
+            <inscription>
+                <value>Default,1</value>
+                <graphics/>
+            </inscription>
+            <tagged>
+                <value>false</value>
+            </tagged>
+            <arcpath id="000" x="221" y="507" curvePoint="false"/>
+            <arcpath id="001" x="358" y="575" curvePoint="false"/>
+            <type value="normal"/>
+        </arc>
+        <arc id="Exiting to Exiting" source="Exiting" target="Exiting">
+            <graphics/>
+            <inscription>
+                <value>Default,1</value>
+                <graphics/>
+            </inscription>
+            <tagged>
+                <value>false</value>
+            </tagged>
+            <arcpath id="000" x="628" y="199" curvePoint="false"/>
+            <arcpath id="001" x="511" y="132" curvePoint="false"/>
+            <type value="normal"/>
+        </arc>
+        <arc id="Exiting to IDLE_ELEVATOR" source="Exiting" target="IDLE_ELEVATOR">
+            <graphics/>
+            <inscription>
+                <value>Default,1</value>
+                <graphics/>
+            </inscription>
+            <tagged>
+                <value>false</value>
+            </tagged>
+            <arcpath id="000" x="501" y="132" curvePoint="false"/>
+            <arcpath id="001" x="356" y="77" curvePoint="false"/>
+            <type value="normal"/>
+        </arc>
+        <arc id="FLOOR_QUEUE to Call" source="FLOOR_QUEUE" target="Call">
+            <graphics/>
+            <inscription>
+                <value>Default,1</value>
+                <graphics/>
+            </inscription>
+            <tagged>
+                <value>false</value>
+            </tagged>
+            <arcpath id="000" x="131" y="86" curvePoint="false"/>
+            <arcpath id="001" x="131" y="141" curvePoint="false"/>
+            <type value="normal"/>
+        </arc>
+        <arc id="IDLE_ELEVATOR to Waiting_Elevator" source="IDLE_ELEVATOR" target="Waiting_Elevator">
+            <graphics/>
+            <inscription>
+                <value>Default,1</value>
+                <graphics/>
+            </inscription>
+            <tagged>
+                <value>false</value>
+            </tagged>
+            <arcpath id="000" x="334" y="84" curvePoint="false"/>
+            <arcpath id="001" x="213" y="279" curvePoint="false"/>
+            <type value="normal"/>
+        </arc>
+        <arc id="IN to Select_Floor" source="IN" target="Select_Floor">
+            <graphics/>
+            <inscription>
+                <value>Default,1</value>
+                <graphics/>
+            </inscription>
+            <tagged>
+                <value>false</value>
+            </tagged>
+            <arcpath id="000" x="386" y="580" curvePoint="false"/>
+            <arcpath id="001" x="516" y="567" curvePoint="false"/>
+            <type value="normal"/>
+        </arc>
+        <arc id="MOVING to Stop" source="MOVING" target="Stop">
+            <graphics/>
+            <inscription>
+                <value>Default,1</value>
+                <graphics/>
+            </inscription>
+            <tagged>
+                <value>false</value>
+            </tagged>
+            <arcpath id="000" x="671" y="552" curvePoint="false"/>
+            <arcpath id="001" x="671" y="361" curvePoint="false"/>
+            <type value="normal"/>
+        </arc>
+        <arc id="OPEN_DOORS to Enter" source="OPEN_DOORS" target="Enter">
+            <graphics/>
+            <inscription>
+                <value>Default,1</value>
+                <graphics/>
+            </inscription>
+            <tagged>
+                <value>false</value>
+            </tagged>
+            <arcpath id="000" x="303" y="412" curvePoint="false"/>
+            <arcpath id="001" x="211" y="502" curvePoint="false"/>
+            <type value="normal"/>
+        </arc>
+        <arc id="Select_Floor to MOVING" source="Select_Floor" target="MOVING">
+            <graphics/>
+            <inscription>
+                <value>Default,1</value>
+                <graphics/>
+            </inscription>
+            <tagged>
+                <value>false</value>
+            </tagged>
+            <arcpath id="000" x="526" y="567" curvePoint="false"/>
+            <arcpath id="001" x="657" y="567" curvePoint="false"/>
+            <type value="normal"/>
+        </arc>
+        <arc id="Stop to Exiting" source="Stop" target="Exiting">
+            <graphics/>
+            <inscription>
+                <value>Default,1</value>
+                <graphics/>
+            </inscription>
+            <tagged>
+                <value>false</value>
+            </tagged>
+            <arcpath id="000" x="671" y="351" curvePoint="false"/>
+            <arcpath id="001" x="644" y="221" curvePoint="false"/>
+            <type value="normal"/>
+        </arc>
+        <arc id="Waiting_Elevator to ENTERING" source="Waiting_Elevator" target="ENTERING">
+            <graphics/>
+            <inscription>
+                <value>Default,1</value>
+                <graphics/>
+            </inscription>
+            <tagged>
+                <value>false</value>
+            </tagged>
+            <arcpath id="000" x="204" y="289" curvePoint="false"/>
+            <arcpath id="001" x="143" y="387" curvePoint="false"/>
+            <type value="normal"/>
+        </arc>
+        <arc id="Waiting_Elevator to OPEN_DOORS" source="Waiting_Elevator" target="OPEN_DOORS">
+            <graphics/>
+            <inscription>
+                <value>Default,1</value>
+                <graphics/>
+            </inscription>
+            <tagged>
+                <value>false</value>
+            </tagged>
+            <arcpath id="000" x="214" y="289" curvePoint="false"/>
+            <arcpath id="001" x="304" y="390" curvePoint="false"/>
+            <type value="normal"/>
+        </arc>
+        <arc id="WAITING to Waiting_Elevator" source="WAITING" target="Waiting_Elevator">
+            <graphics/>
+            <inscription>
+                <value>Default,1</value>
+                <graphics/>
+            </inscription>
+            <tagged>
+                <value>false</value>
+            </tagged>
+            <arcpath id="000" x="144" y="244" curvePoint="false"/>
+            <arcpath id="001" x="204" y="279" curvePoint="false"/>
+            <type value="normal"/>
+        </arc>
+    </net>
+</pnml>
