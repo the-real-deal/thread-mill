@@ -1,0 +1,105 @@
+p 50.0 215.0 { FLOOR_0} 2 n
+t 160.0 215.0 Call_0 n 0 w n {} ne
+t 440.0 215.0 enter_0 n 0 w n {} ne
+p 325.0 95.0 CALLING_0 0 n
+t 895.0 280.0 moving_0_to_everything n 0 w n {} ne
+p 560.0 280.0 IN_CABIN_0 0 n
+a 1520.0 80.0 n7 1 {Il place "ENTERING" e la rispettiva transizione\\nsono stati inseriti a solo scopo gestionale, \\nper cui l'allarme non può scattare in \\nquesti stati essendo atomici}
+a 1520.0 175.0 n5 1 {Per semplificare la leggibilità dell'allarme \\nabbiamo collassato tutti gli spostamenti \\nin un un'unica transizione che \\nriporta al piano corrente}
+p 305.0 215.0 WAITING_0 0 n
+t 1520.0 330.0 move_empty_1_0 e 0 w n {} ne
+t 1525.0 585.0 move_empty_0_1 e 0 w n {} ne
+p 1365.0 610.0 IDLE_1 0 s
+t 515.0 670.0 enter_1 n 0 w n {} ne
+t 910.0 610.0 moving_1_to_everything s 0 w n {} ne
+p 655.0 605.0 IN_CABIN_1 0 n
+p 315.0 765.0 CALLING_1 0 s
+p 325.0 655.0 WAITING_1 0 s
+t 180.0 655.0 Call_1 n 0 w n {} ne
+p 55.0 655.0 FLOOR_1 2 n
+p 320.0 560.0 ENABLE_CALL_1 1 n
+p 305.0 280.0 ENABLE_CALL_0 1 s
+p 1360.0 280.0 IDLE_0 1 s
+t 1235.0 440.0 reset_lift n 0 w n {} ne
+p 1055.0 440.0 ALARM 0 n
+t 850.0 535.0 full_alarm_1 n 0 w n {} ne
+p 305.0 440.0 NORMAL 1 w
+t 845.0 415.0 resolve n 0 w n {} ne
+t 850.0 350.0 full_alarm_0 n 0 w n {} ne
+t 730.0 450.0 empty_alarm n 0 w n {} ne
+p 465.0 350.0 EMPTY 1 w
+e full_alarm_1 EMPTY 1 n
+e full_alarm_0 EMPTY 1 n
+e empty_alarm EMPTY 1 n
+e EMPTY empty_alarm 1 n
+e moving_1_to_everything EMPTY 1 n
+e moving_0_to_everything EMPTY 1 n
+e EMPTY enter_1 1 n
+e EMPTY enter_0 1 n
+e full_alarm_0 IDLE_0 1 n
+e full_alarm_1 IDLE_1 1 n
+e move_empty_0_1 NORMAL 1 n
+e NORMAL move_empty_0_1 1 n
+e move_empty_1_0 NORMAL 1 n
+e NORMAL move_empty_1_0 1 n
+e move_empty_1_0 0.2536165352 220.0568108 CALLING_0 0.9982606822 915.0546425 1 n
+e full_alarm_1 ALARM 1 n
+e NORMAL full_alarm_1 1 n
+e IN_CABIN_1 full_alarm_1 1 n
+e IN_CABIN_0 full_alarm_0 1 n
+e full_alarm_0 ALARM 1 n
+e NORMAL full_alarm_0 1 n
+e resolve IDLE_0 1 n
+e IDLE_0 resolve 1 n
+e moving_1_to_everything NORMAL 1 n
+e NORMAL moving_1_to_everything 1 n
+e moving_0_to_everything NORMAL 1 n
+e NORMAL moving_0_to_everything 1 n
+e IDLE_0 0.2540283786 79.0253124 enter_0 0.006581966844 580.4963394 1 n
+e CALLING_0 0.9982606822 915.0546425 move_empty_1_0 0.2536165352 220.0568108 1 n
+e moving_0_to_everything IDLE_0 1 n
+e moving_1_to_everything IDLE_1 1 n
+e enter_1 IN_CABIN_1 1 n
+e enter_0 IN_CABIN_0 1 n
+e enter_1 ENABLE_CALL_1 1 n
+e CALLING_1 enter_1 1 n
+e enter_0 ENABLE_CALL_0 1 n
+e CALLING_0 enter_0 1 n
+e IN_CABIN_1 moving_1_to_everything 1 n
+e ALARM reset_lift 1 n
+e reset_lift ALARM 1 n
+e reset_lift IDLE_0 1 n
+e IDLE_1 reset_lift 1 n
+e NORMAL enter_1 1 n
+e enter_1 NORMAL 1 n
+e NORMAL Call_1 1 n
+e Call_1 NORMAL 1 n
+e enter_0 NORMAL 1 n
+e NORMAL enter_0 1 n
+e Call_0 NORMAL 1 n
+e NORMAL Call_0 1 n
+e resolve NORMAL 1 n
+e ALARM resolve 1 n
+e empty_alarm ALARM 1 n
+e NORMAL empty_alarm 1 n
+e move_empty_0_1 0.75 182.0 CALLING_1 0.9971760544 958.1508221 1 n
+e CALLING_1 0.9971819339 960.1505082 move_empty_0_1 0.75 182.0 1 n
+e Call_1 CALLING_1 1 n
+e Call_0 CALLING_0 1 n
+e ENABLE_CALL_1 Call_1 1 n
+e ENABLE_CALL_0 Call_0 1 n
+e IDLE_0 move_empty_0_1 1 n
+e move_empty_0_1 IDLE_1 1 n
+e IDLE_1 move_empty_1_0 1 n
+e move_empty_1_0 IDLE_0 1 n
+e { FLOOR_0} Call_0 1 n
+e Call_0 WAITING_0 1 n
+e WAITING_0 enter_0 1 n
+e IN_CABIN_0 moving_0_to_everything 1 n
+e WAITING_1 enter_1 1 n
+e Call_1 WAITING_1 1 n
+e FLOOR_1 Call_1 1 n
+e IDLE_1 0.6849869735 73.00684899 enter_1 0.9955476362 679.2657801 1 n
+h assignement1_alarm
+
+
