@@ -23,27 +23,28 @@ range USERS=0..M
 // QUEUE in a level
 QUEUE = SLOT[0],
 SLOT[i:USERS] = (
-when (i < M) call -> WAIT[i]
-|alarm -> WAITING_RESOLVE[i]
+    when (i < M) call -> WAIT[i]
+    |alarm -> WAITING_RESOLVE[i]
 ),
 // USER in the head of the queue pressed button and is waiting
 WAIT[i:0..M-1] = (
-move_empty -> ENTERING[i]	// elevator is coming to the level
-|alarm -> WAITING_RESOLVE[i]
+    wait -> ENTERING[i]	// elevator is coming to the level
+    |enter -> SELECT[i]			// elevator is already at the level
+    |alarm -> WAITING_RESOLVE[i]
 ),
 // USER enters the elevator
 ENTERING[i:0..M-1] = (
-enter -> SELECT[i]	// Select the target level
-|alarm -> WAITING_RESOLVE[i]
+    enter -> SELECT[i]	// Select the target level
+    |alarm -> WAITING_RESOLVE[i]
 ),
 SELECT[i:0..M-1] = (
     select_level[to:FLOORS] -> MOVING[i][to] // The elevator is moving with the user inside
-   |alarm -> ALARM_MOVING[i]
+    |alarm -> ALARM_MOVING[i]
 ),
 // ELEVATOR moving the user to the floor 'to'
 MOVING[from:0..M-1][to:FLOORS] = (
     move[to] -> exit[to] -> SLOT[from+1] // User exited the lift the next in queue is waiting
-   |alarm -> ALARM_MOVING[from]
+    |alarm -> ALARM_MOVING[from]
 ),
 // allarme con utente in cabina: l'ascensore lo riporta a piano 0
 ALARM_MOVING[from:0..M-1] = (
@@ -55,7 +56,8 @@ WAITING_RESOLVE[i:USERS] = (resolve -> SLOT[i]).
 // ELEVATOR starting from ground level
 ELEVATOR = IDLE[0],
 IDLE[i:FLOORS] = (
-	s[tmp:FLOORS].move_empty -> LOADING[tmp] // someone called the elevator and is waiting, move to the level
+    s[tmp:FLOORS].move_empty -> LOADING[tmp]    // someone called the elevator and is waiting, move to the level
+	|s[i].enter -> IN_CABIN[i]                  // someone is waiting at the i level, directly enter the elevator
 	|alarm -> ALARM_ELEVATOR
 ),
 // The USER is entering the lift at the level i
@@ -70,7 +72,7 @@ IN_CABIN[i:FLOORS] = (
 ),
 // User is inside and the alarm triggers
 ALARM_ELEVATOR_FULL[i:FLOORS] = (
-s[i].move[0] -> open_door -> s[i].exit[0] -> AWAIT_SIGNAL
+    s[i].move[0] -> open_door -> s[i].exit[0] -> AWAIT_SIGNAL
 ),
 // Elevator is empty and the alarm triggers
 ALARM_ELEVATOR = (move -> open_door -> AWAIT_SIGNAL),
@@ -78,7 +80,7 @@ AWAIT_SIGNAL = (resolve -> IDLE[0]).
 
 // Elevator state
 NORMAL = (
-alarm -> ALARM
+    alarm -> ALARM
 ),
 // Alarm activated
 ALARM = (resolve -> NORMAL).
@@ -87,7 +89,7 @@ ALARM = (resolve -> NORMAL).
     s[i:0..M]:QUEUE
     || ELEVATOR
     || NORMAL
-) / { alarm/s[j:0..M].alarm, resolve/s[k:0..M].resolve }.
+) / { alarm/s[j:0..M].alarm, resolve/s[k:0..M].resolve, wait/move_empty }.
 
 // FLUENTS
 const False = 0
