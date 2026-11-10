@@ -38,9 +38,6 @@ SLOT[i:USERS] = (
 
 The current slot index represents the head of the queue.
 
-> Known problem
-- The next user in the line can only press the button once the previous user has exited the lift.
-
 ### Elevator Single Capacity
 In order to ensure that at any moment inside the elevator there is at most one user we separate the current elevator state in multiple sub-states:
 - `IDLE[l:0..N]`: the cabin is empty and at the level `l`
@@ -147,3 +144,27 @@ Example:
 ```
 assert LIVENESS_CALL = forall[f:0..N] [](CALLING[f] -> <>(s[f].enter || ALARM))
 ```
+
+### Known Problems
+> FIFO Queue
+- The next user in the line can only press the button once the previous user has exited the lift.
+
+> Elevator Entrance
+Example Case:
+- A user pressed the button at the level 2
+- The elevator is full and directed to the level 2 to drop another user
+- The user should be able to enter directly
+
+To achieve this, the idle elevator looks like this:
+```
+IDLE[i:FLOORS] = (
+    s[tmp:FLOORS].move_empty -> LOADING[tmp]
+    // someone called the elevator and is waiting, move to the level
+	|s[i].enter -> IN_CABIN[i]
+    // someone is waiting at the i level, directly enter the elevator
+	|alarm -> ALARM_ELEVATOR
+)
+```
+If the elevator is at the same level both action are available, both result in the same outcome.
+- If `move_empty` is performed, the elevator does a "fake move" and enters the `ENTERING` state which leads to the `SELECT` state
+- If `enter` is performed, the user goes directly to the `SELECT` state.
