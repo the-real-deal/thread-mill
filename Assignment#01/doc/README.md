@@ -168,3 +168,127 @@ IDLE[i:FLOORS] = (
 If the elevator is at the same level both action are available, both result in the same outcome.
 - If `move_empty` is performed, the elevator does a "fake move" and enters the `ENTERING` state which leads to the `SELECT` state
 - If `enter` is performed, the user goes directly to the `SELECT` state.
+
+## PetriNet
+This part of the work is divided into two complementary models, both saved in the `.ndr` format of the TINA editor:
+
+- **General network** (`assignement1.ndr`): describes ordinary operation in detail, from the floor call to the passenger exiting, including empty cabin movement;
+- **Alarm network** (`assignement1_alarm.ndr`): shows how the alarm integrates into ordinary operation. For readability, it is drawn on only two floors with simplified movement, though the structure is identical for all floors.
+
+### State-of-the-art
+A **bidirectional arc** is a pair of arcs with opposite directions between a place $p$ and a transition $t$. In this case, $t$ requires the presence of a token in $p$ but returns it immediately after firing: the place acts as an enabling condition without consuming the resource (read arc).
+
+### The general network
+
+#### Nodes
+
+The network has 39 nodes, grouped into nine families.
+
+| Place | Meaning | Initial marking |
+| --- | --- | --- |
+| FLOOR_i | queue of people on floor $i$ | 2 |
+| ENABLE_CALL_i | enables a new call from floor $i$ | 1 |
+| CALLING_i | active call from floor $i$ | 0 |
+| WAITING_i | person waiting for the cabin on floor $i$ | 0 |
+| ENTERING_i | person entering the cabin (management support state) | 0 |
+| IN_CABIN_i | occupied cabin on floor $i$, destination yet to be chosen | 0 |
+| MOVING_i_j | occupied cabin traveling from floor $i$ to floor $j$ | 0 |
+| EXITING_i_j | cabin arrived at floor $j$ (departed from $i$), person exiting | 0 |
+| IDLE_i | free cabin stopped at floor $i$ | 1 if $i = 0$, else 0 |
+
+#### Transitions
+
+The network has 42 transitions.
+
+| Transition | Inputs | Outputs | Meaning |
+| --- | --- | --- | --- |
+| Call_i | FLOOR_i, ENABLE_CALL_i | WAITING_i, CALLING_i | a person in the queue calls the elevator |
+| we_i | WAITING_i, IDLE_i | ENTERING_i | the cabin is on the floor and the person can start entering (from waiting to entering) |
+| enter_i | ENTERING_i, CALLING_i | IN_CABIN_i, ENABLE_CALL_i | entry completed: the call closes and the floor can call again |
+| select_i_j | IN_CABIN_i | MOVING_i_j | selection of destination floor $j$ |
+| stop_i_j | MOVING_i_j | EXITING_i_j | the cabin arrives at floor $j$ |
+| exit_i_j | EXITING_i_j | IDLE_j | exit: the cabin becomes free at floor $j$ |
+| move_empty_i_j (i ≠ j) | IDLE_i, CALLING_j* | IDLE_j, CALLING_j | the free cabin reaches floor $j$ where a call originated |
+
+The asterisk indicates a bidirectional arc.
+
+#### Operation
+
+The lifecycle of the token representing the user is:
+
+1. **Call.** Each queue can place a call if and only if the corresponding `ENABLE_CALL_i` contains a token. When `Call_i` fires, the tokens in `FLOOR_i` and `ENABLE_CALL_i` are consumed and assigned to `WAITING_i` and `CALLING_i`, respectively. Since `ENABLE_CALL_i` remains empty until the person has entered the cabin, the same floor cannot generate multiple simultaneous calls.
+2. **Cabin arrival.** A token in `CALLING_j` enables empty movement toward floor $j$: `move_empty_i_j` moves the cabin token from `IDLE_i` to `IDLE_j` and returns the token to `CALLING_j` (bidirectional arc), which therefore remains active until the person enters. If the cabin is already on the calling floor—as happens initially for floor 0—no movement is required.
+3. **Entry.** Only after the cabin is stopped at the floor (token in `IDLE_i`) can the resource move from `WAITING_i` to `ENTERING_i` via the `we_i` transition. Firing consumes both the person token and the cabin token: from this point onward, a single token represents the occupied cabin. Then `enter_i` consumes the tokens in `ENTERING_i` and `CALLING_i`, closing the call, and produces one token in `IN_CABIN_i` and one in `ENABLE_CALL_i`, allowing someone else to call from the same floor.
+4. **Travel.** From `IN_CABIN_i`, the destination floor $j$ is chosen (`select_i_j`); the cabin passes through `MOVING_i_j` and arrives (`stop_i_j`) at `EXITING_i_j`.
+5. **Exit.** `exit_i_j` assigns the resource to the selected floor (`IDLE_j`): the cabin becomes free again on the new floor and can move again or pick up another passenger.
+
+#### Design choices
+
+- **ENABLE_CALL_i** prevents too many simultaneous calls from the same floor. Together with `CALLING_i`, it forms a simple mutual exclusion mechanism: $\text{ENABLE\_CALL}_i + \text{CALLING}_i = 1$ in every reachable marking.
+- **CALLING_i** prevents the cabin from moving freely: empty movement is only possible if someone has called. It is read, but not consumed, by `move_empty_i_j`, so the call remains valid until the person has actually entered.
+- **IDLE_i** encodes the cabin's position when it is free. When it is occupied, the position is encoded by the chain `ENTERING`, `IN_CABIN`, `MOVING`, `EXITING`. At any given moment, there is only one "cabin" token in just one of these places.
+- **MOVING_i_j and EXITING_i_j** exist for every origin-destination pair: remembering both the departure floor and the arrival floor allows `exit_i_j` to return the resource to the correct floor.
+- **ENTERING_i and we_i** separate the moment the cabin becomes available at the floor from the moment entry is completed; `ENABLE_CALL_i` is returned only once entry is finished.
+
+##### Evolution example
+
+From the initial marking, a person on floor 1 wants to go to floor 0 (cabin initially on floor 0):
+
+1. `Call_1`: `FLOOR_1` and `ENABLE_CALL_1` move to `WAITING_1` and `CALLING_1`.
+2. `move_empty_0_1`: the cabin moves from `IDLE_0` to `IDLE_1` (`CALLING_1` remains marked).
+3. `we_1` and `enter_1`: the person boards; `CALLING_1` empties, `ENABLE_CALL_1` becomes marked again, and the token moves to `IN_CABIN_1`.
+4. `select_1_0`, `stop_1_0`, and `exit_1_0`: travel to floor 0; the cabin becomes free again in `IDLE_0`.
+
+At the end, `FLOOR_1` contains only one token because one person has been served, and the second person in the queue can now place a call.
+
+#### Alarm management
+##### Simplifications adopted
+
+- For visual simplicity, the alarm is drawn on only two floors (0 and 1); operation is identical on all other floors.
+- All movement is collapsed into a single transition per floor, `moving_i_to_everything`, which returns the free cabin to the current floor: the details of `select`, `MOVING`, `stop`, `EXITING`, and `exit` were already shown in the general network.
+- The `ENTERING` place and the `we_i` transition were introduced purely for management purposes; as atomic states, the alarm cannot trigger within them. In the alarm network, `we_i` and `enter_i` are therefore merged into a single `enter_i` transition.
+- Although conceptually a single alarm, it is handled as two distinct alarms: one for an empty cabin (`empty_alarm`) and one for a full cabin (`full_alarm_i`).
+
+#### New nodes and transitions
+
+| Element | Meaning |
+| --- | --- |
+| NORMAL (initially marked) | ordinary operation: if it holds the token, actions are allowed |
+| ALARM | active alarm state |
+| EMPTY (initially marked) | the cabin is empty |
+
+| Transition | Inputs | Outputs |
+| --- | --- | --- |
+| Call_i | FLOOR_i, ENABLE_CALL_i, NORMAL* | WAITING_i, CALLING_i, NORMAL |
+| enter_i | WAITING_i, IDLE_i, CALLING_i, EMPTY, NORMAL* | IN_CABIN_i, ENABLE_CALL_i, NORMAL |
+| moving_i_to_everything | IN_CABIN_i, NORMAL* | IDLE_i, EMPTY, NORMAL |
+| move_empty_i_j | IDLE_i, CALLING_j*, NORMAL* | IDLE_j, CALLING_j, NORMAL |
+| empty_alarm | NORMAL, EMPTY* | ALARM, EMPTY |
+| full_alarm_i | IN_CABIN_i, NORMAL | ALARM, IDLE_i, EMPTY |
+| reset_lift | IDLE_1, ALARM* | IDLE_0, ALARM |
+| resolve | ALARM, IDLE_0* | NORMAL, IDLE_0 |
+
+The asterisk indicates a bidirectional arc.
+
+#### NORMAL as a general condition
+
+All elevator actions (calls, entry, movement, empty movement) are connected to `NORMAL` via bidirectional arcs. Many transitions are bidirectional specifically because executing them requires the state to be normal, yet the resource is sent back so the `NORMAL` state is not lost. As long as `NORMAL` is marked, the elevator behaves as in the general network; when an alarm consumes the token from `NORMAL`, all actions are blocked—meaning they cannot be executed.
+
+Conversely, alarm transitions consume `NORMAL`: if `NORMAL` does not hold the resource, a new alarm cannot be triggered. `NORMAL` and `ALARM` are therefore mutually exclusive ($\text{NORMAL} + \text{ALARM} = 1$).
+
+#### Empty-cabin alarm
+
+The `EMPTY` place represents an empty cabin: it is consumed by `enter_i` and returned by `moving_i_to_everything` and `full_alarm_i`. If the cabin is empty and the system is in a normal state (for example, before a call), `empty_alarm` can fire: it reads `EMPTY`, consumes the token in `NORMAL`, and produces a token in `ALARM`. The system remains in alarm until `resolve` fires.
+
+#### Full-cabin alarm
+
+If the cabin is occupied (token in `IN_CABIN_i`), `full_alarm_i` can fire, consuming `NORMAL` and `IN_CABIN_i` and producing `ALARM`. The occupant is released: the cabin becomes free again on the floor where the alarm occurred (`IDLE_i`), and `EMPTY` is marked again. In this case as well, the system remains in alarm until `resolve` is triggered.
+
+#### Exiting the alarm state
+
+`resolve` consumes `ALARM`, returns the token to `NORMAL`, and requires the cabin to be on floor 0 (`IDLE_0`, bidirectional arc). If the cabin is on another floor when the alarm occurs, `reset_lift` fires first, reading `ALARM` (without consuming it) and returning the cabin to floor 0. In the alarm state, these two are the only enabled transitions. Already registered calls (`CALLING_j` and `WAITING_j`) are not lost and will be served after recovery.
+
+#### Evolution examples
+
+- **Full-cabin alarm from floor 1:** `Call_1`, `move_empty_0_1`, `enter_1`, `full_alarm_1` (now `NORMAL` is empty and all actions are blocked), `reset_lift` (cabin moves from floor 1 to floor 0), `resolve` (return to `NORMAL`).
+- **Empty-cabin alarm:** from the initial marking, `empty_alarm` fires; the system enters `ALARM` and, with the cabin already on floor 0, `resolve` restores `NORMAL`.
