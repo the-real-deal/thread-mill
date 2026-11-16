@@ -1,4 +1,7 @@
-package sisco.ass02.n_body_seq;
+package threadmill.simularion.view;
+
+import threadmill.simularion.controller.NBodySimulation;
+import threadmill.simularion.model.TestBodySets;
 
 /**
  *
@@ -6,7 +9,7 @@ package sisco.ass02.n_body_seq;
  * 
  * @author aricci
  */
-public class SimulationMainWithGUI {
+public class SimulationGUIMain {
 
 	public static void main(String[] args) {
 

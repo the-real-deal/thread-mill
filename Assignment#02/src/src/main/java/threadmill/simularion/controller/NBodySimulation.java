@@ -1,10 +1,19 @@
-package sisco.ass02.n_body_seq;
+package threadmill.simularion.controller;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.Random;
+
+import threadmill.simularion.exceptions.InfiniteForceException;
+import threadmill.simularion.model.Body;
+import threadmill.simularion.model.geometry.P2d;
+import threadmill.simularion.model.geometry.V2d;
+import threadmill.simularion.view.SimulationView;
 
 public class NBodySimulation {
 
-	private Optional<SimulationView> view;
+	private final Optional<SimulationView> view;
 
 	/* bodies in the field */
 	List<Body> bodies;
@@ -18,35 +27,44 @@ public class NBodySimulation {
 	public NBodySimulation(SimulationView view) {
 		this.view = Optional.of(view);
 	}
-	
+
 	public NBodySimulation() {
 		this.view = Optional.empty();
 	}
-	
+
 	public void init(ArrayList<Body> bodies) {
 		this.bodies = bodies;
 	}
 
 	public void initRandom(int nBodies) {
 		Random rand = new Random(System.currentTimeMillis());
-		bodies = new ArrayList<Body>();
+		bodies = new ArrayList<>();
 		for (int i = 0; i < nBodies; i++) {
-			double x = -1.0 + 2.0*rand.nextDouble();
-			double y = -1.0 + 2.0*rand.nextDouble();
-			double vx = -0.1 + 0.2*rand.nextDouble();
-			double vy = -0.1 + 0.2*rand.nextDouble();
-			double m = 1 + rand.nextDouble()*9;
+			double x = -1.0 + 2.0 * rand.nextDouble();
+			double y = -1.0 + 2.0 * rand.nextDouble();
+			double vx = -0.1 + 0.2 * rand.nextDouble();
+			double vy = -0.1 + 0.2 * rand.nextDouble();
+			double m = 1 + rand.nextDouble() * 9;
 			Body b = new Body(i, new P2d(x, y), new V2d(vx, vy), 0.01, m);
 			bodies.add(b);
 		}
 	}
-		
+
 	public void execute(long nSteps) {
+
+		// [TODO]
+		// long lastFrame = System.nanoTime();
+		// ...
+		// long now = System.nanoTime();
+		// if (view.isPresent() && now - lastFrame >= 16_000_000L) {
+		// view.get().display(bodies, vt, iter);
+		// lastFrame = now;
+		// }
 
 		if (view.isPresent()) {
 			view.get().init();
 		}
-		
+
 		/* init virtual time */
 
 		vt = 0;
@@ -75,7 +93,6 @@ public class NBodySimulation {
 
 			/* compute bodies new pos */
 
-			
 			for (Body b : bodies) {
 				b.updatePos(dt);
 			}
@@ -106,14 +123,14 @@ public class NBodySimulation {
 				try {
 					V2d forceByOtherBody = b.computeGForceBy(otherBody);
 					totalForce.sum(forceByOtherBody);
-				} catch (Exception ex) {
+				} catch (InfiniteForceException ex) {
 				}
 			}
 		}
 		return totalForce;
 	}
-	
+
 	public int getNumBodies() {
 		return bodies.size();
-	}	
+	}
 }
