@@ -1,11 +1,13 @@
-package threadmill.simularion.view;
+package threadmill.simulation;
 
-import threadmill.simularion.controller.NBodySimulation;
-import threadmill.simularion.model.TestBodySets;
+import threadmill.simulation.controller.TestBodySets;
+import threadmill.simulation.model.NBodySimulation;
+import threadmill.simulation.view.SimulationView;
+import threadmill.simulation.view.View;
 
 /**
  *
- * N-Body simulation - simple sequential version - vith a GUI
+ * N-Body simulation - simple sequential version - with a GUI
  * 
  * @author aricci
  */
@@ -15,7 +17,7 @@ public class SimulationGUIMain {
 
 		int nSteps = 50000;
 
-		SimulationView view = new SimulationView(620, 620);
+		View view = new SimulationView(620, 620);
 		NBodySimulation sim = new NBodySimulation(view);
 
 		// sim.init(TestBodySets.bodySet_two_bodies());

@@ -1,9 +1,9 @@
-package threadmill.simularion.model;
+package threadmill.simulation.model;
 
-import threadmill.simularion.exceptions.InfiniteForceException;
-import threadmill.simularion.exceptions.NullVectorException;
-import threadmill.simularion.model.geometry.P2d;
-import threadmill.simularion.model.geometry.V2d;
+import threadmill.simulation.exceptions.InfiniteForceException;
+import threadmill.simulation.exceptions.NullVectorException;
+import threadmill.simulation.model.geometry.P2d;
+import threadmill.simulation.model.geometry.V2d;
 
 public class Body {
 

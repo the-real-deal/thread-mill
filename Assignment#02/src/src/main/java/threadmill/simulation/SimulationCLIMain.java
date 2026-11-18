@@ -1,7 +1,6 @@
-package threadmill.simularion.view;
+package threadmill.simulation;
 
-import threadmill.simularion.controller.NBodySimulation;
-import threadmill.simularion.model.TestBodySets;
+import threadmill.simulation.model.NBodySimulation;
 
 /**
  * 
@@ -16,8 +15,8 @@ public class SimulationCLIMain {
 		NBodySimulation sim = new NBodySimulation();
 
 		// sim.init(TestBodySets.bodySet_two_bodies());
-		sim.init(TestBodySets.bodySet_three_bodies());
-		// sim.initRandom(5000);
+		// sim.init(TestBodySets.bodySet_three_bodies());
+		sim.initRandom(5000);
 
 		int nSteps = 50000;
 		long startTime = System.currentTimeMillis();

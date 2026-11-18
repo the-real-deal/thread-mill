@@ -1,4 +1,4 @@
-package threadmill.simularion.model.geometry;
+package threadmill.simulation.model.geometry;
 
 /**
  * 

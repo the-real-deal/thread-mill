@@ -1,6 +1,6 @@
-package threadmill.simularion.model.geometry;
+package threadmill.simulation.model.geometry;
 
-import threadmill.simularion.exceptions.NullVectorException;
+import threadmill.simulation.exceptions.NullVectorException;
 
 /**
  * 

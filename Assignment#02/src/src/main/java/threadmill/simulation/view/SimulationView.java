@@ -1,5 +1,7 @@
-package threadmill.simularion.view;
+package threadmill.simulation.view;
 
+import java.awt.BorderLayout;
+import java.awt.FlowLayout;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
@@ -10,34 +12,37 @@ import java.awt.event.WindowEvent;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
-import threadmill.simularion.model.Body;
-import threadmill.simularion.model.geometry.P2d;
+import threadmill.simulation.model.Body;
+import threadmill.simulation.model.geometry.P2d;
 
 /**
  * 
  * Simulation view
  *
  */
-public class SimulationView {
+public class SimulationView implements View {
 
 	private final VisualiserFrame frame;
 	private long nFramesRendered;
 	private long startTime;
 
 	public SimulationView(int w, int h) {
-		frame = new VisualiserFrame(w, h);
+		this.frame = new VisualiserFrame(w, h);
 	}
 
+	@Override
 	public void init() {
-		startTime = System.currentTimeMillis();
-		nFramesRendered = 0;
+		this.startTime = System.currentTimeMillis();
+		this.nFramesRendered = 0;
 	}
 
-	public void display(List<Body> bodies, double vt, long iter) {
+	@Override
+	public void render(List<Body> bodies, double vt, long iter) {
 		nFramesRendered++;
 		long dt = System.currentTimeMillis() - startTime;
 		int framePerSec = (int) ((((double) nFramesRendered) / dt) * 1000);
@@ -47,13 +52,57 @@ public class SimulationView {
 	public static class VisualiserFrame extends JFrame {
 
 		private final VisualiserPanel panel;
+		private final JButton startButton = new JButton("Start");
+		private final JButton stopButton = new JButton("Stop");
+		private final JButton resumeButton = new JButton("Resume");
+		private final JButton stepButton = new JButton("Step");
 
 		public VisualiserFrame(int w, int h) {
 			setTitle("Bodies Simulation");
 			setSize(w, h);
 			setResizable(false);
 			panel = new VisualiserPanel(w, h);
-			getContentPane().add(panel);
+
+			JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 5));
+			buttonPanel.add(startButton);
+			buttonPanel.add(stopButton);
+			buttonPanel.add(resumeButton);
+			buttonPanel.add(stepButton);
+
+			getContentPane().setLayout(new BorderLayout());
+			getContentPane().add(panel, BorderLayout.CENTER);
+			getContentPane().add(buttonPanel, BorderLayout.SOUTH);
+
+			// Initial state: only Start is available
+			stopButton.setEnabled(false);
+			resumeButton.setEnabled(false);
+			stepButton.setEnabled(false);
+
+			startButton.addActionListener(e -> {
+				startButton.setEnabled(false);
+				stopButton.setEnabled(true);
+				resumeButton.setEnabled(false);
+				stepButton.setEnabled(false);
+				// control.onStart();
+			});
+
+			stopButton.addActionListener(e -> {
+				stopButton.setEnabled(false);
+				resumeButton.setEnabled(true);
+				stepButton.setEnabled(true);
+				// control.onStop();
+			});
+
+			resumeButton.addActionListener(e -> {
+				resumeButton.setEnabled(false);
+				stepButton.setEnabled(false);
+				stopButton.setEnabled(true);
+				// control.onResume();
+			});
+
+			stepButton.addActionListener(e -> {
+			}/* control.onStep() */);
+
 			addWindowListener(new WindowAdapter() {
 				@Override
 				public void windowClosing(WindowEvent ev) {

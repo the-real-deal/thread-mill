@@ -1,4 +1,4 @@
-package threadmill.simularion.exceptions;
+package threadmill.simulation.exceptions;
 
 public class InfiniteForceException extends Exception {
 

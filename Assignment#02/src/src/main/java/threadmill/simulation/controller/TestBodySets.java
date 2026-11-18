@@ -1,9 +1,10 @@
-package threadmill.simularion.model;
+package threadmill.simulation.controller;
 
 import java.util.ArrayList;
 
-import threadmill.simularion.model.geometry.P2d;
-import threadmill.simularion.model.geometry.V2d;
+import threadmill.simulation.model.Body;
+import threadmill.simulation.model.geometry.P2d;
+import threadmill.simulation.model.geometry.V2d;
 
 /**
  * 

@@ -1,19 +1,18 @@
-package threadmill.simularion.controller;
+package threadmill.simulation.model;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 
-import threadmill.simularion.exceptions.InfiniteForceException;
-import threadmill.simularion.model.Body;
-import threadmill.simularion.model.geometry.P2d;
-import threadmill.simularion.model.geometry.V2d;
-import threadmill.simularion.view.SimulationView;
+import threadmill.simulation.exceptions.InfiniteForceException;
+import threadmill.simulation.model.geometry.P2d;
+import threadmill.simulation.model.geometry.V2d;
+import threadmill.simulation.view.View;
 
 public class NBodySimulation {
 
-	private final Optional<SimulationView> view;
+	private final Optional<View> view;
 
 	/* bodies in the field */
 	List<Body> bodies;
@@ -24,7 +23,7 @@ public class NBodySimulation {
 	/* virtual time step */
 	double dt;
 
-	public NBodySimulation(SimulationView view) {
+	public NBodySimulation(View view) {
 		this.view = Optional.of(view);
 	}
 
@@ -105,7 +104,7 @@ public class NBodySimulation {
 			/* display current stage */
 
 			if (view.isPresent()) {
-				view.get().display(bodies, vt, iter);
+				view.get().render(bodies, vt, iter);
 			}
 		}
 	}
