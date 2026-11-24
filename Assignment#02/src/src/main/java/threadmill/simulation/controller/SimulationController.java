@@ -16,12 +16,12 @@ public interface SimulationController {
     /**
      * Pauses the simulation execution
      */
-    void suspend();
+    void pause();
 
     /**
      * Resumes the simulation execution
      */
-    void resume();
+    void restart();
 
     /**
      * When stopped, this causes the simulation to only perform one step

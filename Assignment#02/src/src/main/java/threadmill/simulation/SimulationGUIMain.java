@@ -1,7 +1,8 @@
 package threadmill.simulation;
 
+import threadmill.simulation.controller.SimulationController;
 import threadmill.simulation.controller.TestBodySets;
-import threadmill.simulation.model.NBodySimulation;
+import threadmill.simulation.controller.ThreadController;
 import threadmill.simulation.view.SimulationView;
 import threadmill.simulation.view.View;
 
@@ -14,16 +15,12 @@ import threadmill.simulation.view.View;
 public class SimulationGUIMain {
 
 	public static void main(String[] args) {
-
 		int nSteps = 50000;
-
-		View view = new SimulationView(620, 620);
-		NBodySimulation sim = new NBodySimulation(view);
-
-		// sim.init(TestBodySets.bodySet_two_bodies());
-		sim.init(TestBodySets.bodySet_three_bodies());
-		// sim.initRandom(5000);
-
-		sim.execute(nSteps);
+		SimulationController c = new ThreadController(
+				TestBodySets.bodySet_two_bodies(),
+				nSteps);
+		View view = new SimulationView(620, 620, c);
+		view.init();
+		c.setView(view);
 	}
 }

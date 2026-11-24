@@ -17,6 +17,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
+import threadmill.simulation.controller.SimulationController;
 import threadmill.simulation.model.Body;
 import threadmill.simulation.model.geometry.P2d;
 
@@ -30,9 +31,11 @@ public class SimulationView implements View {
 	private final VisualiserFrame frame;
 	private long nFramesRendered;
 	private long startTime;
+	private final SimulationController control;
 
-	public SimulationView(int w, int h) {
+	public SimulationView(int w, int h, SimulationController c) {
 		this.frame = new VisualiserFrame(w, h);
+		this.control = c;
 	}
 
 	@Override
@@ -49,7 +52,7 @@ public class SimulationView implements View {
 		frame.display(bodies, vt, iter, framePerSec);
 	}
 
-	public static class VisualiserFrame extends JFrame {
+	public class VisualiserFrame extends JFrame {
 
 		private final VisualiserPanel panel;
 		private final JButton startButton = new JButton("Start");
@@ -83,25 +86,26 @@ public class SimulationView implements View {
 				stopButton.setEnabled(true);
 				resumeButton.setEnabled(false);
 				stepButton.setEnabled(false);
-				// control.onStart();
+				control.init();
 			});
 
 			stopButton.addActionListener(e -> {
 				stopButton.setEnabled(false);
 				resumeButton.setEnabled(true);
 				stepButton.setEnabled(true);
-				// control.onStop();
+				control.pause();
 			});
 
 			resumeButton.addActionListener(e -> {
 				resumeButton.setEnabled(false);
 				stepButton.setEnabled(false);
 				stopButton.setEnabled(true);
-				// control.onResume();
+				control.restart();
 			});
 
 			stepButton.addActionListener(e -> {
-			}/* control.onStep() */);
+				control.step();
+			});
 
 			addWindowListener(new WindowAdapter() {
 				@Override
