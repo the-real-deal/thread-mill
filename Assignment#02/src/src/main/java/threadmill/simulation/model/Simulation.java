@@ -28,4 +28,11 @@ public interface Simulation {
      * @return Returns a list containing the bodies of the simulation
      */
     List<Body> getBodies();
+
+    /**
+     * Shuts down the threads of simulation
+     */
+    default void shutdown() {
+        // default implementation does nothing
+    }
 }

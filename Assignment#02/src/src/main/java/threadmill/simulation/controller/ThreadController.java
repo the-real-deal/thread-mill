@@ -5,8 +5,8 @@ import java.util.Optional;
 import java.util.concurrent.Semaphore;
 
 import threadmill.simulation.model.Body;
-import threadmill.simulation.model.MultiThreadedSimulation;
 import threadmill.simulation.model.Simulation;
+import threadmill.simulation.model.multithreadedsimulation.MultiThreadedSimulation;
 import threadmill.simulation.view.View;
 
 public class ThreadController extends Thread implements SimulationController {
@@ -66,8 +66,8 @@ public class ThreadController extends Thread implements SimulationController {
 
     @Override
     public void init() {
-        this.start();
         this.state.setState(SimulationState.RUNNING);
+        this.start();
     }
 
     @Override
@@ -130,6 +130,7 @@ public class ThreadController extends Thread implements SimulationController {
                 view.get().render(this.simulaton.getBodies(), this.vt, this.iter);
             }
         }
+        this.simulaton.shutdown();
     }
 
     private void updateSimulationValues() {

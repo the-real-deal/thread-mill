@@ -17,7 +17,7 @@ public class SimulationGUIMain {
 	public static void main(String[] args) {
 		int nSteps = 50000;
 		SimulationController c = new ThreadController(
-				TestBodySets.bodySet_two_bodies(),
+				TestBodySets.bodySet_three_bodies(),
 				nSteps);
 		View view = new SimulationView(620, 620, c);
 		view.init();
